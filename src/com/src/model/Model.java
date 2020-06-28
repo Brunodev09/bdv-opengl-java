@@ -1,4 +1,4 @@
-package com.src.renderer;
+package com.src.model;
 
 public class Model {
     private int _vaoID;
