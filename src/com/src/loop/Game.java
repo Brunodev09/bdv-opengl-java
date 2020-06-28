@@ -5,6 +5,7 @@ import com.src.renderer.Loader;
 import com.src.renderer.Model;
 import com.src.renderer.RenderManager;
 import com.src.renderer.Renderer;
+import com.src.shader.StaticShader;
 
 public class Game {
     public static void loop(Configuration config) {
@@ -12,6 +13,7 @@ public class Game {
 
         Loader loader = new Loader();
         Renderer renderer = new Renderer();
+        StaticShader shader = new StaticShader();
 
         float[] vertices = {
                 -0.5f, 0.5f, 0,
@@ -29,10 +31,13 @@ public class Game {
 
         while (!RenderManager.shouldExit()) {
             renderer.init();
+            shader.init();
             renderer.render(mdl);
+            shader.stop();
             RenderManager.updateRender(config.FPS);
         }
 
+        shader.runCollector();
         loader.runCollector();
         RenderManager.closeRender();
     }
