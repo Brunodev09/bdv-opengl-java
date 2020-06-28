@@ -1,5 +1,7 @@
 package com.src.utils;
 
+import com.src.entity.Camera;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -18,5 +20,36 @@ public class MathUtils {
         Matrix4f.scale(new Vector3f(S, S, S), matrix, matrix);
 
         return matrix;
+    }
+
+    public static Matrix4f createProjectionMatrix(float fov, float np, float fp) {
+        Matrix4f matrix = new Matrix4f();
+
+        float ratio = (float) Display.getWidth() / (float) Display.getHeight();
+        float scaleY = (1f / (float) Math.tan(Math.toRadians(fov / 2f))) * ratio;
+        float scaleX = scaleY / ratio;
+        float frustumLength = fp - np;
+
+        matrix = new Matrix4f();
+        matrix.m00 = scaleX;
+        matrix.m11 = scaleY;
+        matrix.m22 = -((fp + np) / frustumLength);
+        matrix.m23 = -1;
+        matrix.m32 = -((2 * np * fp) / frustumLength);
+        matrix.m33 = 0;
+
+        return matrix;
+    }
+
+    public static Matrix4f createViewMatrix(Camera camera) {
+        Matrix4f viewMatrix = new Matrix4f();
+        viewMatrix.setIdentity();
+        Matrix4f.rotate((float) Math.toRadians(camera.getPitch()), new Vector3f(1, 0, 0), viewMatrix, viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(camera.getYaw()), new Vector3f(0, 1, 0), viewMatrix, viewMatrix);
+        Vector3f pos = camera.getPosition();
+        Vector3f negativePos = new Vector3f(-pos.x, -pos.y, -pos.z);
+        Matrix4f.translate(negativePos, viewMatrix, viewMatrix);
+
+        return viewMatrix;
     }
 }

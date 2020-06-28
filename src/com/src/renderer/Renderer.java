@@ -5,16 +5,29 @@ import com.src.model.Model;
 import com.src.model.TexturedModel;
 import com.src.shader.StaticShader;
 import com.src.utils.MathUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class Renderer {
+
+    private static final float _FOV = 70;
+    private static final float _NEAR_PLANE = 0.1f;
+    private static final float _FAR_PLANE = 1000;
+
+    private Matrix4f _projection;
+
+    public Renderer(StaticShader shader) {
+        _projection = MathUtils.createProjectionMatrix(_FOV, _NEAR_PLANE, _FAR_PLANE);
+        shader.init();
+        shader.loadProjectionMatrix(_projection);
+        shader.stop();
+    }
+
     public void init() {
+        // Clip rectangles that are rendered on top of each other
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glClearColor(0, 0, 0, 1);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
     }
 
     public void render(Model mdl) {
