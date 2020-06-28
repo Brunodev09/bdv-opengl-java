@@ -22,4 +22,8 @@ public class BufferOperations {
 
         return buffer;
     }
+
+    public static FloatBuffer createFloatBuffer(int size) {
+        return BufferUtils.createFloatBuffer(size);
+    }
 }

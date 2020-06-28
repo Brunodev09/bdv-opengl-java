@@ -1,6 +1,7 @@
 package com.src.loop;
 
 import com.src.config.Configuration;
+import com.src.entity.Entity;
 import com.src.model.TexturedModel;
 import com.src.renderer.Loader;
 import com.src.model.Model;
@@ -8,6 +9,7 @@ import com.src.renderer.RenderManager;
 import com.src.renderer.Renderer;
 import com.src.shader.StaticShader;
 import com.src.texture.ModelTexture;
+import org.lwjgl.util.vector.Vector3f;
 
 public class Game {
     public static void loop(Configuration config) {
@@ -40,11 +42,12 @@ public class Game {
         Model mdl = loader.loadDataTextureToVAO(vertices, textureCoords, indexes);
         ModelTexture texture = new ModelTexture(loader.loadTexture("tex1"));
         TexturedModel tmdl = new TexturedModel(mdl, texture);
+        Entity entity = new Entity(tmdl, new Vector3f(-1, 0, 0), 0, 0, 0, 1);
 
         while (!RenderManager.shouldExit()) {
             renderer.init();
             shader.init();
-            renderer.render(tmdl);
+            renderer.render(entity, shader);
             shader.stop();
             RenderManager.updateRender(config.FPS);
         }

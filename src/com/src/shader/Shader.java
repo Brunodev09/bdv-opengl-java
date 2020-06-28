@@ -1,16 +1,23 @@
 package com.src.shader;
 
+import com.src.renderer.BufferOperations;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
 public abstract class Shader {
     private int _id;
     private int _vertexShaderId;
     private int _fragmentShaderId;
+
+    // 4x4 matrixes
+    private static FloatBuffer _floatBuffer = BufferOperations.createFloatBuffer(16);
 
     public Shader(String vertexShaderFile, String fragmentShaderFile) {
         _vertexShaderId = _load(vertexShaderFile, GL20.GL_VERTEX_SHADER);
@@ -18,9 +25,10 @@ public abstract class Shader {
         _id = GL20.glCreateProgram();
         GL20.glAttachShader(_id, _vertexShaderId);
         GL20.glAttachShader(_id, _fragmentShaderId);
+        _bindAttr();
         GL20.glLinkProgram(_id);
         GL20.glValidateProgram(_id);
-        _bindAttr();
+        getAllUniformsVariables();
     }
 
     public void init() {
@@ -29,6 +37,31 @@ public abstract class Shader {
 
     public void stop() {
         GL20.glUseProgram(0);
+    }
+
+    protected abstract void getAllUniformsVariables();
+
+    protected int getUniformVariable(String variableName) {
+        return GL20.glGetUniformLocation(_id, variableName);
+    }
+
+    protected void loadFloatInUniformVariable(int location, float value) {
+        GL20.glUniform1f(location, value);
+    }
+
+    protected void loadVectorInUniformVariable(int location, Vector3f vec3) {
+        GL20.glUniform3f(location, vec3.x, vec3.y, vec3.z);
+    }
+
+    protected void loadBinaryInUniformVariable(int location, boolean value) {
+        float load = value ? 1 : 0;
+        loadFloatInUniformVariable(location, load);
+    }
+
+    protected void loadMatrixInUniformVariable(int location, Matrix4f m4x4) {
+        m4x4.store(_floatBuffer);
+        _floatBuffer.flip();
+        GL20.glUniformMatrix4(location, false, _floatBuffer);
     }
 
     public void runCollector() {

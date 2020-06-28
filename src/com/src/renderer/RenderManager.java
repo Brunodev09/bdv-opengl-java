@@ -7,9 +7,9 @@ public class RenderManager {
 
     public static void createRender(int WIDTH, int HEIGHT, String TITLE) {
 
-        ContextAttribs contextAttribs = new ContextAttribs(3, 2);
-        contextAttribs.withForwardCompatible(true);
-        contextAttribs.withProfileCore(true);
+        ContextAttribs contextAttribs = new ContextAttribs(3, 2)
+        .withForwardCompatible(true)
+        .withProfileCore(true);
 
         try {
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
