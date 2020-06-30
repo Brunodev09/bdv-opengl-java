@@ -15,7 +15,7 @@ public class BufferOperations {
         return buffer;
     }
 
-    public static IntBuffer convertFloatToIntBuffer(int[] array) {
+    public static IntBuffer convertIntToIntBuffer(int[] array) {
         IntBuffer buffer = BufferUtils.createIntBuffer(array.length);
         buffer.put(array);
         buffer.flip();

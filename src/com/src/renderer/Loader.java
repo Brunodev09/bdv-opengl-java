@@ -23,7 +23,7 @@ public class Loader {
     public Model loadDataToVAO(float[] positions, int[] indexes) {
         int VID = _createVAO();
         _bindIndexBufferVBO(indexes);
-        _storeDataInList(0, 3,  positions);
+        _storeVBODataInVAOList(0, 3,  positions);
         _unbindVAO();
 
         return new Model(VID, indexes.length);
@@ -32,8 +32,8 @@ public class Loader {
     public Model loadDataTextureToVAO(float[] positions, float[] textureCoords, int[] indexes) {
         int VID = _createVAO();
         _bindIndexBufferVBO(indexes);
-        _storeDataInList(0, 3, positions);
-        _storeDataInList(1, 2, textureCoords);
+        _storeVBODataInVAOList(0, 3, positions);
+        _storeVBODataInVAOList(1, 2, textureCoords);
         _unbindVAO();
 
         return new Model(VID, indexes.length);
@@ -94,22 +94,19 @@ public class Loader {
         int vboID = GL15.glGenBuffers();
         VBOs.add(vboID);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
-        IntBuffer buffer = BufferOperations.convertFloatToIntBuffer(indexes);
+        IntBuffer buffer = BufferOperations.convertIntToIntBuffer(indexes);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-
     }
 
     private int _createVAO() {
         int VID = GL30.glGenVertexArrays();
-
         VAOs.add(VID);
-
         GL30.glBindVertexArray(VID);
 
         return VID;
     }
 
-    private void _storeDataInList(int attrNum, int coordSize, float[] data) {
+    private void _storeVBODataInVAOList(int attrNum, int coordSize, float[] data) {
         int vboId = GL15.glGenBuffers();
 
         VBOs.add(vboId);
