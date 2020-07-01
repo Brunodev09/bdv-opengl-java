@@ -1,3 +1,28 @@
+/*
+ ----OBJ file format example----
+ Vertexes P(x, y, z)
+    v 3.227124 -0.065127 -1.000000
+    v 3.227124 -0.065127 1.000000
+    v -3.227125 -0.065127 1.000000
+ Textures P(x, y)
+    vt 0.533523 0.942320
+    vt 0.905299 0.919749
+    vt 0.905299 0.942320
+ Normals P(x, y, z)
+    vn -0.6862 -0.6100 0.3962
+    vn -0.6862 -0.6100 -0.3962
+    vn -0.7566 0.4865 0.4368
+    vn -0.7566 0.4865 -0.4368
+ Faces (vertex/texture/normal)
+    f 38/1/1 45/2/1 41/3/1
+    f 27/4/2 40/5/2 31/6/2
+    f 5/7/3 2/8/3 1/9/3
+
+    Mapping line 17 -> Triangle(38, 45, 41), TextureCoords(1, 2, 3), Normals(1, 1, 1)
+    Mapping line 17 -> Triangle((x,y,z),(x',y',z'),(x'',y'',z'')) TextureCoords((x,y),(x',y')),
+                       Normals((x,y,z),(x',y',z'),(x'',y'',z''))
+*/
+
 package com.src.renderer;
 
 import com.src.model.Model;
