@@ -3,6 +3,7 @@ package com.src.loop;
 import com.src.config.Configuration;
 import com.src.entity.Camera;
 import com.src.entity.Entity;
+import com.src.entity.Lightray;
 import com.src.model.TexturedModel;
 import com.src.renderer.Loader;
 import com.src.model.Model;
@@ -12,8 +13,6 @@ import com.src.renderer.Renderer;
 import com.src.shader.StaticShader;
 import com.src.texture.ModelTexture;
 import org.lwjgl.util.vector.Vector3f;
-
-import java.io.IOException;
 
 public class Game {
     public static void loop(Configuration config) {
@@ -105,6 +104,7 @@ public class Game {
         TexturedModel tmdl = new TexturedModel(mdl, texture);
 
         Entity entity = new Entity(tmdl, new Vector3f(0, 0, -20), 0, 0, 0, 1);
+        Lightray ray = new Lightray(new Vector3f(0, 0, -20), new Vector3f(1, 1,1));
         Camera cam = new Camera();
 
         while (!RenderManager.shouldExit()) {
@@ -112,6 +112,7 @@ public class Game {
             cam.move();
             renderer.init();
             shader.init();
+            shader.loadLight(ray);
             shader.loadViewMatrix(cam);
             renderer.render(entity, shader);
             shader.stop();

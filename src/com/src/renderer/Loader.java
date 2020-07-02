@@ -29,11 +29,22 @@ public class Loader {
         return new Model(VID, indexes.length);
     }
 
-    public Model loadDataTextureToVAO(float[] positions, float[] textureCoords, int[] indexes) {
+    public Model loadDataToVAO(float[] positions, float[] textureCoords, int[] indexes) {
         int VID = _createVAO();
         _bindIndexBufferVBO(indexes);
         _storeVBODataInVAOList(0, 3, positions);
         _storeVBODataInVAOList(1, 2, textureCoords);
+        _unbindVAO();
+
+        return new Model(VID, indexes.length);
+    }
+
+    public Model loadDataToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indexes) {
+        int VID = _createVAO();
+        _bindIndexBufferVBO(indexes);
+        _storeVBODataInVAOList(0, 3, positions);
+        _storeVBODataInVAOList(1, 2, textureCoords);
+        _storeVBODataInVAOList(2, 3, normals);
         _unbindVAO();
 
         return new Model(VID, indexes.length);

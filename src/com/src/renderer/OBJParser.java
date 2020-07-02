@@ -126,7 +126,7 @@ public class OBJParser {
                 indexPtr++;
             }
 
-            return loader.loadDataTextureToVAO(vertexArr, texturesArr, indexesArr);
+            return loader.loadDataToVAO(vertexArr, texturesArr, normalsArr, indexesArr);
 
         } catch (IOException e) {
             System.err.println(e);

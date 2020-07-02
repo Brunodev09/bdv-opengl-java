@@ -2,16 +2,23 @@
 
 layout(location = 0) in vec3 position;
 in vec2 textureCoordinates;
+in vec3 normal;
 
 out vec2 passTextureCoordinates;
-out vec3 color;
+out vec3 normalVectorFromVertex;
+out vec3 vectorFromVertexToLightSource;
 
 uniform mat4 transformation;
 uniform mat4 projection;
 uniform mat4 view;
+uniform vec3 lightPosition;
 
 void main(void) {
-    gl_Position =  projection * view * transformation * vec4(position, 1.0);
+    vec4 mainPosition = transformation * vec4(position, 1.0);
+
+    gl_Position = projection * view * mainPosition;
     passTextureCoordinates = textureCoordinates;
-    color = vec3(position.x - 0.5, (position.x / position.y) + 1.0, position.y + 0.5);
+
+    normalVectorFromVertex = (transformation * vec4(normal, 1.0)).xyz;
+    vectorFromVertexToLightSource = lightPosition - mainPosition.xyz;
 }
