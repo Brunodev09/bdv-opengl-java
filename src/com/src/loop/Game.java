@@ -3,9 +3,10 @@ package com.src.loop;
 import com.src.config.Configuration;
 import com.src.entity.Camera;
 import com.src.entity.Entity;
-import com.src.entity.Lightray;
+import com.src.entity.Lightsource;
+import com.src.model.BufferedModel;
 import com.src.model.TexturedModel;
-import com.src.renderer.Loader;
+import com.src.renderer.Pipeline;
 import com.src.model.Model;
 import com.src.renderer.OBJParser;
 import com.src.renderer.RenderManager;
@@ -18,93 +19,20 @@ public class Game {
     public static void loop(Configuration config) {
         RenderManager.createRender(config.WIDTH, config.HEIGHT, config.TITLE);
 
-        Loader loader = new Loader();
+        Pipeline pipe = new Pipeline();
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
 
-//        float[] vertices = {
-//                -0.5f,0.5f,-0.5f,
-//                -0.5f,-0.5f,-0.5f,
-//                0.5f,-0.5f,-0.5f,
-//                0.5f,0.5f,-0.5f,
-//
-//                -0.5f,0.5f,0.5f,
-//                -0.5f,-0.5f,0.5f,
-//                0.5f,-0.5f,0.5f,
-//                0.5f,0.5f,0.5f,
-//
-//                0.5f,0.5f,-0.5f,
-//                0.5f,-0.5f,-0.5f,
-//                0.5f,-0.5f,0.5f,
-//                0.5f,0.5f,0.5f,
-//
-//                -0.5f,0.5f,-0.5f,
-//                -0.5f,-0.5f,-0.5f,
-//                -0.5f,-0.5f,0.5f,
-//                -0.5f,0.5f,0.5f,
-//
-//                -0.5f,0.5f,0.5f,
-//                -0.5f,0.5f,-0.5f,
-//                0.5f,0.5f,-0.5f,
-//                0.5f,0.5f,0.5f,
-//
-//                -0.5f,-0.5f,0.5f,
-//                -0.5f,-0.5f,-0.5f,
-//                0.5f,-0.5f,-0.5f,
-//                0.5f,-0.5f,0.5f
-//
-//        };
-//
-//        float[] textureCoords = {
-//                0,0,
-//                0,1,
-//                1,1,
-//                1,0,
-//                0,0,
-//                0,1,
-//                1,1,
-//                1,0,
-//                0,0,
-//                0,1,
-//                1,1,
-//                1,0,
-//                0,0,
-//                0,1,
-//                1,1,
-//                1,0,
-//                0,0,
-//                0,1,
-//                1,1,
-//                1,0,
-//                0,0,
-//                0,1,
-//                1,1,
-//                1,0
-//        };
-//
-//        int[] indexes = {
-//                0,1,3,
-//                3,1,2,
-//                4,5,7,
-//                7,5,6,
-//                8,9,11,
-//                11,9,10,
-//                12,13,15,
-//                15,13,14,
-//                16,17,19,
-//                19,17,18,
-//                20,21,23,
-//                23,21,22
-//        };
+//        Model mdl = pipe.loadDataToVAO(vertices, indexes);
+//        Model mdl = pipe.loadDataTextureToVAO(vertices, textureCoords, indexes);
 
-//        Model mdl = loader.loadDataToVAO(vertices, indexes);
-//        Model mdl = loader.loadDataTextureToVAO(vertices, textureCoords, indexes);
-        Model mdl = OBJParser.parseOBJ("testModel", loader);
-        ModelTexture texture = new ModelTexture(loader.loadTexture("testTexture"));
+        BufferedModel data = OBJParser.parseOBJ("testModel");
+        Model mdl = pipe.loadDataToVAO(data.getVertices(), data.getTextures(), data.getNormals(), data.getIndexes());
+        ModelTexture texture = new ModelTexture(pipe.loadTexture("white"));
         TexturedModel tmdl = new TexturedModel(mdl, texture);
+        Entity entity = new Entity(tmdl, new Vector3f(0, 0, -30), 0, 0, 0, 1);
 
-        Entity entity = new Entity(tmdl, new Vector3f(0, 0, -20), 0, 0, 0, 1);
-        Lightray ray = new Lightray(new Vector3f(0, 0, -20), new Vector3f(1, 1,1));
+        Lightsource light = new Lightsource(new Vector3f(-10, 0, -30), new Vector3f(1, 1,1));
         Camera cam = new Camera();
 
         while (!RenderManager.shouldExit()) {
@@ -112,7 +40,7 @@ public class Game {
             cam.move();
             renderer.init();
             shader.init();
-            shader.loadLight(ray);
+            shader.loadLight(light);
             shader.loadViewMatrix(cam);
             renderer.render(entity, shader);
             shader.stop();
@@ -120,7 +48,7 @@ public class Game {
         }
 
         shader.runCollector();
-        loader.runCollector();
+        pipe.runCollector();
         RenderManager.closeRender();
     }
 }

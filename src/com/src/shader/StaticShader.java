@@ -1,7 +1,7 @@
 package com.src.shader;
 
 import com.src.entity.Camera;
-import com.src.entity.Lightray;
+import com.src.entity.Lightsource;
 import com.src.utils.MathUtils;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -49,7 +49,7 @@ public class StaticShader extends Shader {
         super.loadMatrixInUniformVariable(_variableLocation3, view);
     }
 
-    public void loadLight(Lightray light) {
+    public void loadLight(Lightsource light) {
         super.loadVectorInUniformVariable(_variableLocation4, light.getPosition());
         super.loadVectorInUniformVariable(_variableLocation5, light.getColor());
     }

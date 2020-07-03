@@ -25,12 +25,12 @@
 
 package com.src.renderer;
 
+import com.src.model.BufferedModel;
 import com.src.model.Model;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ import java.util.List;
 public class OBJParser {
     private static final String _EXT = ".obj";
 
-    public static Model parseOBJ(String file, Loader loader) {
+    public static BufferedModel parseOBJ(String file) {
         try {
             FileReader reader = new FileReader("res/" + file + _EXT);
             BufferedReader bf = new BufferedReader(reader);
@@ -74,7 +74,7 @@ public class OBJParser {
                                     Float.parseFloat(curr[1]),
                                     Float.parseFloat(curr[2])));
                 }
-                // If its a normal
+                // If its a normal vector coordinate
                 else if (line.startsWith("vn ")) {
                     normalsList.add(
                             new Vector3f(
@@ -126,7 +126,7 @@ public class OBJParser {
                 indexPtr++;
             }
 
-            return loader.loadDataToVAO(vertexArr, texturesArr, normalsArr, indexesArr);
+            return new BufferedModel(vertexArr, texturesArr, normalsArr, indexesArr);
 
         } catch (IOException e) {
             System.err.println(e);

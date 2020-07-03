@@ -11,6 +11,8 @@ public class Entity {
     private float _rotX, _rotY, _rotZ;
     private float _scale;
 
+    private Lightsource _light;
+
     public Entity(TexturedModel texturedModel, Vector3f positionVector, float rotX, float rotY, float rotZ, float scale) {
         this._model = texturedModel;
         this._position = positionVector;
@@ -95,5 +97,13 @@ public class Entity {
 
     public void setScale(float _scale) {
         this._scale = _scale;
+    }
+
+    public void setLight(Lightsource light) {
+        this._light = light;
+    }
+
+    public Lightsource getLight() {
+        return _light;
     }
 }

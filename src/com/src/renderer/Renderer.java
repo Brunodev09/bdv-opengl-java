@@ -1,12 +1,14 @@
 package com.src.renderer;
 
 import com.src.entity.Entity;
+import com.src.entity.Lightsource;
 import com.src.model.Model;
 import com.src.model.TexturedModel;
 import com.src.shader.StaticShader;
 import com.src.utils.MathUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class Renderer {
 

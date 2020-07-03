@@ -12,7 +12,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Loader {
+public class Pipeline {
 
     // Tracking VAO's and VBO's to collect them from memory afterwards
     private List<Integer> VAOs = new ArrayList<>();
