@@ -23,14 +23,13 @@ public class MathUtils {
     }
 
     public static Matrix4f createProjectionMatrix(float fov, float np, float fp) {
-        Matrix4f matrix = new Matrix4f();
+        Matrix4f matrix = new Matrix4f();;
 
         float ratio = (float) Display.getWidth() / (float) Display.getHeight();
         float scaleY = (1f / (float) Math.tan(Math.toRadians(fov / 2f))) * ratio;
         float scaleX = scaleY / ratio;
         float frustumLength = fp - np;
 
-        matrix = new Matrix4f();
         matrix.m00 = scaleX;
         matrix.m11 = scaleY;
         matrix.m22 = -((fp + np) / frustumLength);

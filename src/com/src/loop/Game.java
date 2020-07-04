@@ -26,17 +26,19 @@ public class Game {
 //        Model mdl = pipe.loadDataToVAO(vertices, indexes);
 //        Model mdl = pipe.loadDataTextureToVAO(vertices, textureCoords, indexes);
 
-        BufferedModel data = OBJParser.parseOBJ("testModel");
+        BufferedModel data = OBJParser.parseOBJ("sphere");
         Model mdl = pipe.loadDataToVAO(data.getVertices(), data.getTextures(), data.getNormals(), data.getIndexes());
-        ModelTexture texture = new ModelTexture(pipe.loadTexture("white"));
+        ModelTexture texture = new ModelTexture(pipe.loadTexture("testTexture"));
+        texture.setShineDamper(10);
+        texture.setReflectivity(1);
         TexturedModel tmdl = new TexturedModel(mdl, texture);
         Entity entity = new Entity(tmdl, new Vector3f(0, 0, -30), 0, 0, 0, 1);
 
-        Lightsource light = new Lightsource(new Vector3f(-10, 0, -30), new Vector3f(1, 1,1));
+        Lightsource light = new Lightsource(new Vector3f(300, 300,-30), new Vector3f(1, 1,1));
         Camera cam = new Camera();
 
         while (!RenderManager.shouldExit()) {
-            entity.rotate(0, 0.5f, 0);
+            entity.rotate(0.5f, 0.5f, 0.5f);
             cam.move();
             renderer.init();
             shader.init();

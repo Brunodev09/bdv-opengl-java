@@ -105,6 +105,7 @@ public class OBJParser {
                     _parseVertex(tri, indexesList, textureCoordsList, normalsList, texturesArr, normalsArr);
                 }
                 triangles = null;
+
                 line = bf.readLine();
             }
 

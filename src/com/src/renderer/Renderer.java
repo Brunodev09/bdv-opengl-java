@@ -1,14 +1,13 @@
 package com.src.renderer;
 
 import com.src.entity.Entity;
-import com.src.entity.Lightsource;
 import com.src.model.Model;
 import com.src.model.TexturedModel;
 import com.src.shader.StaticShader;
+import com.src.texture.ModelTexture;
 import com.src.utils.MathUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 public class Renderer {
 
@@ -63,7 +62,9 @@ public class Renderer {
         GL30.glBindVertexArray(mdl.getVAOID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
 
+        // Applying transformations and loading them to the VAO
         Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(
                 entity.getPosition(),
                 entity.getRotX(),
@@ -72,11 +73,17 @@ public class Renderer {
                 entity.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
 
+        // Applying specular lighting - Maybe remove this from the Renderer
+        ModelTexture md = tmdl.getModelTexture();
+        shader.loadSpecularLights(md.getShineDamper(), md.getReflectivity());
+
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, tmdl.getModelTexture().getId());
         GL11.glDrawElements(GL11.GL_TRIANGLES, mdl.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
+
         GL30.glBindVertexArray(0);
     }
 }

@@ -15,6 +15,8 @@ public class StaticShader extends Shader {
     private int _variableLocation3;
     private int _variableLocation4;
     private int _variableLocation5;
+    private int _variableLocation6;
+    private int _variableLocation7;
 
     public StaticShader() {
         super(V_FILE, F_FILE);
@@ -27,6 +29,8 @@ public class StaticShader extends Shader {
         _variableLocation3 = super.getUniformVariable("view");
         _variableLocation4 = super.getUniformVariable("lightPosition");
         _variableLocation5 = super.getUniformVariable("lightColor");
+        _variableLocation6 = super.getUniformVariable("shineDamper");
+        _variableLocation7 = super.getUniformVariable("reflectivity");
     }
 
     @Override
@@ -52,5 +56,10 @@ public class StaticShader extends Shader {
     public void loadLight(Lightsource light) {
         super.loadVectorInUniformVariable(_variableLocation4, light.getPosition());
         super.loadVectorInUniformVariable(_variableLocation5, light.getColor());
+    }
+
+    public void loadSpecularLights(float damperFactor, float reflectivity) {
+        super.loadFloatInUniformVariable(_variableLocation6, damperFactor);
+        super.loadFloatInUniformVariable(_variableLocation7, reflectivity);
     }
 }
