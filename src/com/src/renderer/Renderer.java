@@ -3,11 +3,13 @@ package com.src.renderer;
 import com.src.entity.Entity;
 import com.src.model.Model;
 import com.src.model.TexturedModel;
+import com.src.shader.PrimitiveShader;
 import com.src.shader.StaticShader;
 import com.src.texture.ModelTexture;
 import com.src.utils.MathUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class Renderer {
 
@@ -18,6 +20,13 @@ public class Renderer {
     private Matrix4f _projection;
 
     public Renderer(StaticShader shader) {
+        _projection = MathUtils.createProjectionMatrix(_FOV, _NEAR_PLANE, _FAR_PLANE);
+        shader.init();
+        shader.loadProjectionMatrix(_projection);
+        shader.stop();
+    }
+
+    public Renderer(PrimitiveShader shader) {
         _projection = MathUtils.createProjectionMatrix(_FOV, _NEAR_PLANE, _FAR_PLANE);
         shader.init();
         shader.loadProjectionMatrix(_projection);
@@ -84,6 +93,30 @@ public class Renderer {
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(2);
 
+        GL30.glBindVertexArray(0);
+    }
+
+    public void renderPrimitives(Entity entity, PrimitiveShader shader) {
+        Model mdl = entity.getModelPrimitive();
+
+        Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(
+                entity.getPosition(),
+                entity.getRotX(),
+                entity.getRotY(),
+                entity.getRotZ(),
+                entity.getScale());
+        shader.loadTransformationMatrix(transformationMatrix);
+
+        GL30.glBindVertexArray(mdl.getVAOID());
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
+
+        GL11.glDrawElements(GL11.GL_TRIANGLES, mdl.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
     }
 }

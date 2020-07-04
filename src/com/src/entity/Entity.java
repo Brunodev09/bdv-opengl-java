@@ -2,12 +2,14 @@ package com.src.entity;
 
 import com.src.model.Model;
 import com.src.model.TexturedModel;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Entity {
     private TexturedModel _model;
     private Model _model_primitive;
     private Vector3f _position;
+    private Vector2f _position2d;
     private float _rotX, _rotY, _rotZ;
     private float _scale;
 
@@ -62,6 +64,8 @@ public class Entity {
     public Vector3f getPosition() {
         return _position;
     }
+
+    public Vector2f getPosition2D() { return _position2d; }
 
     public void setPosition(Vector3f _position) {
         this._position = _position;

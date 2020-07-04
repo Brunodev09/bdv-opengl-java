@@ -13,6 +13,13 @@ public class BufferedModel {
         this._INDEXES = indexes;
     }
 
+    public BufferedModel(float[] vertices, int[] indexes) {
+        this._VERTICES = vertices;
+        this._INDEXES = indexes;
+        this._TEXTURES = null;
+        this._NORMALS = null;
+    }
+
     public float[] getVertices() {
         return _VERTICES;
     }
