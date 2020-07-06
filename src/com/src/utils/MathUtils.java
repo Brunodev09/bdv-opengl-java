@@ -42,6 +42,20 @@ public class MathUtils {
         return matrix;
     }
 
+    public static Matrix4f createOrthographicMatrix() {
+        Matrix4f ortho = new Matrix4f();
+        ortho.setIdentity();
+
+        float zNear = 0.01f;
+        float zFar = 100f;
+
+        ortho.m00 = 2 / (float) Display.getWidth();
+        ortho.m11 = 2 / -(float) Display.getHeight();
+        ortho.m22 = -2 / (zFar - zNear);
+
+        return ortho;
+    }
+
     public static Matrix4f createViewMatrix(Camera camera) {
         Matrix4f viewMatrix = new Matrix4f();
         viewMatrix.setIdentity();

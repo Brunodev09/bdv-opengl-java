@@ -39,6 +39,10 @@ public class PrimitiveShader extends Shader {
         super.loadMatrixInUniformVariable(_variableLocation2, m4x4);
     }
 
+    public void loadOrthographicMatrix(Matrix4f m4x4) {
+        super.loadMatrixInUniformVariable(_variableLocation2, m4x4);
+    }
+
     public void loadViewMatrix(Camera camera) {
         Matrix4f view = MathUtils.createViewMatrix(camera);
         super.loadMatrixInUniformVariable(_variableLocation3, view);

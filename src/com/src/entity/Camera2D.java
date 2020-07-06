@@ -9,7 +9,7 @@ public class Camera2D {
     private float _yaw;
     private float _roll;
 
-    private float _speed = 0.02f;
+    private float _speed = 10.0f;
 
     public Camera2D() {
 
@@ -17,7 +17,7 @@ public class Camera2D {
 
     public void move() {
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            _position.y += _speed;
+            _position.y -= _speed;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
             _position.x += _speed;
@@ -26,7 +26,7 @@ public class Camera2D {
             _position.x -= _speed;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            _position.y -= _speed;
+            _position.y += _speed;
         }
     }
 

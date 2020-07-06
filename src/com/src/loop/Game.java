@@ -23,24 +23,51 @@ import java.util.List;
 public class Game {
     public static void loop(Configuration config) {
 
-//        float[] vertices = {
-//                -0.5f, 0.5f, -0.5f,
-//                -0.5f, -0.5f, -0.5f,
-//                0.5f, -0.5f, -0.5f,
-//                0.5f, 0.5f, -0.5f,
-//        };
-//
-//        int[] indexes = {
-//                0, 1, 3,
-//                3, 1, 2
-//        };
+        float[] vertices = {
+                -50.5f, 50.5f, 0,
+                -50.5f, -50.5f, 0,
+                50.5f, -50.5f, 0,
+                50.5f, 50.5f, 0,
+        };
+
+        int[] indexes = {
+                0, 1, 3,
+                3, 1, 2
+        };
+
+        float[] textureCoords = {
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0,
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0,
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0,
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0,
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0,
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0
+        };
 
         RenderManager.createRender(config.WIDTH, config.HEIGHT, config.TITLE);
 
         Pipeline pipe = new Pipeline();
         StaticShader shader = new StaticShader();
         PrimitiveShader primitiveShader = new PrimitiveShader();
-        Renderer primitiveRenderer = new Renderer(primitiveShader);
+        Renderer primitiveRenderer = Renderer.Renderer2D(primitiveShader);
         Renderer renderer = new Renderer(shader);
 
 //        Model mdl = pipe.loadDataToVAO(vertices, indexes);
@@ -54,32 +81,34 @@ public class Game {
         TexturedModel tmdl = new TexturedModel(mdl, texture);
         Entity entity = new Entity(tmdl, new Vector3f(0, 0, -30), 0, 0, 0, 1);
 
-//        BufferedModel data2 = new BufferedModel(vertices, indexes);
-//        Model mdl2 = pipe.loadDataToVAO(data2.getVertices(), data2.getIndexes());
-//        Entity entity2 = new Entity(mdl2, new Vector3f(0, 0, -10), 0, 0, 0, 1);
-//        Camera2D cam2d = new Camera2D();
+        BufferedModel data2 = new BufferedModel(vertices, textureCoords, indexes);
+        Model mdl2 = pipe.loadDataToVAO(data2.getVertices(), data2.getTextures(), data2.getIndexes());
+        ModelTexture texture2 = new ModelTexture(pipe.loadTexture("tex2"));
+        TexturedModel tmdl2 = new TexturedModel(mdl2, texture2);
+        Entity entity2 = new Entity(tmdl2, new Vector3f(0, 0, 0), 0, 0, 0, 1);
+        Camera2D cam2d = new Camera2D();
 
         Lightsource light = new Lightsource(new Vector3f(300, 300, -30), new Vector3f(1, 1, 1));
         Camera cam = new Camera();
 
         while (!RenderManager.shouldExit()) {
-            entity.rotate(0, 0.5f, 0);
-            renderer.init();
-            shader.init();
-
-            cam.move();
-
-            shader.loadLight(light);
-            shader.loadViewMatrix(cam);
-            renderer.render(entity, shader);
-            shader.stop();
-
-//            cam2d.move();
-//            primitiveRenderer.init();
-//            primitiveShader.init();
-//            primitiveShader.loadViewMatrix(cam2d);
-//            primitiveRenderer.renderPrimitives(entity2, primitiveShader);
-//            primitiveShader.stop();
+//            entity.rotate(0, 0.5f, 0);
+//            renderer.init();
+//            shader.init();
+//
+//            cam.move();
+//
+//            shader.loadLight(light);
+//            shader.loadViewMatrix(cam);
+//            renderer.render(entity, shader);
+//            shader.stop();
+            entity2.rotate(0, 0, 0.5f);
+            cam2d.move();
+            primitiveRenderer.init();
+            primitiveShader.init();
+            primitiveShader.loadViewMatrix(cam2d);
+            primitiveRenderer.render(entity2, primitiveShader);
+            primitiveShader.stop();
 
             RenderManager.updateRender(config.FPS);
         }
