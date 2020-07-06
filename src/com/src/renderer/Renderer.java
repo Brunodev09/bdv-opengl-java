@@ -11,19 +11,28 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.util.List;
+import java.util.Map;
+
 public class Renderer {
+    // @TODO - Manage the used positions on the VAO.
 
     private static final float _FOV = 70;
     private static final float _NEAR_PLANE = 0.1f;
     private static final float _FAR_PLANE = 1000;
 
     private Matrix4f _projection;
+    private StaticShader _shader;
 
     public Renderer() {
 
     }
 
     public Renderer(StaticShader shader) {
+        _shader = shader;
+        // Culling back faces
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_BACK);
         _projection = MathUtils.createProjectionMatrix(_FOV, _NEAR_PLANE, _FAR_PLANE);
         shader.init();
         shader.loadProjectionMatrix(_projection);
@@ -31,6 +40,9 @@ public class Renderer {
     }
 
     public Renderer(PrimitiveShader shader) {
+        // Culling back faces
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_BACK);
         _projection = MathUtils.createProjectionMatrix(_FOV, _NEAR_PLANE, _FAR_PLANE);
         shader.init();
         shader.loadProjectionMatrix(_projection);
@@ -79,14 +91,40 @@ public class Renderer {
         GL30.glBindVertexArray(0);
     }
 
-    public void render(Entity entity, StaticShader shader) {
-        TexturedModel tmdl = entity.getModel();
+    public void renderEntities(Map<TexturedModel, List<Entity>> entities) {
+        for (TexturedModel key : entities.keySet()) {
+            this._modelSetup(key, _shader);
+            List<Entity> entitiesToLoadFromModel = entities.get(key);
+            for (Entity entity : entitiesToLoadFromModel) {
+                this._applyTransformationAndLoadIntoShader(entity, _shader);
+                GL11.glDrawElements(GL11.GL_TRIANGLES, key.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+            }
+            this._unbindTexture();
+        }
+    }
+
+    private void _modelSetup(TexturedModel tmdl, StaticShader shader) {
         Model mdl = tmdl.getModel();
         GL30.glBindVertexArray(mdl.getVAOID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         GL20.glEnableVertexAttribArray(2);
+        ModelTexture md = tmdl.getModelTexture();
+        shader.loadSpecularLights(md.getShineDamper(), md.getReflectivity());
 
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, tmdl.getModelTexture().getId());
+    }
+
+    private void _unbindTexture() {
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
+
+        GL30.glBindVertexArray(0);
+    }
+
+    private void _applyTransformationAndLoadIntoShader(Entity entity, StaticShader shader) {
         // Applying transformations and loading them to the VAO
         Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(
                 entity.getPosition(),
@@ -95,19 +133,6 @@ public class Renderer {
                 entity.getRotZ(),
                 entity.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
-
-        // Applying specular lighting - Maybe remove this from the Renderer
-        ModelTexture md = tmdl.getModelTexture();
-        shader.loadSpecularLights(md.getShineDamper(), md.getReflectivity());
-
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, tmdl.getModelTexture().getId());
-        GL11.glDrawElements(GL11.GL_TRIANGLES, mdl.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(0);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(2);
-
-        GL30.glBindVertexArray(0);
     }
 
     public void render(Entity entity, PrimitiveShader shader) {
