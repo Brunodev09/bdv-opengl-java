@@ -45,6 +45,7 @@ public class Terrain {
                 normals[vertexPtr * 3 + 2] = 0;
 
                 textureCoords[vertexPtr * 2] = (float) j / ((float) VERTEX_COUNT - 1);
+                textureCoords[vertexPtr * 2 + 1] = (float) i / ((float) VERTEX_COUNT - 1);
 
                 vertexPtr++;
 

@@ -92,7 +92,7 @@ public class Game {
         Lightsource light = new Lightsource(new Vector3f(300, 300, -30), new Vector3f(1, 1, 1));
         Camera cam = new Camera();
 
-        Terrain terrain = new Terrain(0, 0 , new ModelTexture(pipe.loadTexture("grass2")));
+        Terrain terrain = new Terrain(0, 0 , new ModelTexture(pipe.loadTexture("grass")));
         Model terrainModel = pipe.loadDataToVAO(
                 terrain.getMdl().getVertices(),
                 terrain.getMdl().getTextures(),
