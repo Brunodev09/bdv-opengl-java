@@ -5,10 +5,10 @@ import com.src.entity.Lightsource;
 import com.src.utils.MathUtils;
 import org.lwjgl.util.vector.Matrix4f;
 
-public class StaticShader extends Shader {
+public class Terrain3DShader extends Shader {
 
-    private static final String V_FILE = "src/com/src/shader/vertexShader.txt";
-    private static final String F_FILE = "src/com/src/shader/fragmentShader.txt";
+    private static final String V_FILE = "src/com/src/shader/terrain3DVertexShader.txt";
+    private static final String F_FILE = "src/com/src/shader/terrain3DFragmentShader.txt";
 
     private int _variableLocation1;
     private int _variableLocation2;
@@ -18,7 +18,7 @@ public class StaticShader extends Shader {
     private int _variableLocation6;
     private int _variableLocation7;
 
-    public StaticShader() {
+    public Terrain3DShader() {
         super(V_FILE, F_FILE);
     }
 

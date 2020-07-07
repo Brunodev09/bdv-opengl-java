@@ -28,6 +28,12 @@ public class Camera {
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
             _position.z += _speed;
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+            _position.y -= _speed;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+            _position.y += _speed;
+        }
     }
 
     public Vector3f getPosition() {

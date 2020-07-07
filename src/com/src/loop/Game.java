@@ -13,11 +13,13 @@ import com.src.renderer.OBJParser;
 import com.src.renderer.RenderManager;
 import com.src.renderer.Renderer;
 import com.src.shader.PrimitiveShader;
-import com.src.shader.StaticShader;
+import com.src.shader.DefaultShader;
+import com.src.terrain.Terrain;
 import com.src.texture.ModelTexture;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.nio.Buffer;
 import java.util.List;
 
 public class Game {
@@ -65,7 +67,7 @@ public class Game {
         RenderManager.createRender(config.WIDTH, config.HEIGHT, config.TITLE);
 
         Pipeline pipe = new Pipeline();
-        StaticShader shader = new StaticShader();
+//        DefaultShader shader = new DefaultShader();
 //        PrimitiveShader primitiveShader = new PrimitiveShader();
 //        Renderer primitiveRenderer = Renderer.Renderer2D(primitiveShader);
 
@@ -90,12 +92,23 @@ public class Game {
         Lightsource light = new Lightsource(new Vector3f(300, 300, -30), new Vector3f(1, 1, 1));
         Camera cam = new Camera();
 
+        Terrain terrain = new Terrain(0, 0 , new ModelTexture(pipe.loadTexture("grass2")));
+        Model terrainModel = pipe.loadDataToVAO(
+                terrain.getMdl().getVertices(),
+                terrain.getMdl().getTextures(),
+                terrain.getMdl().getNormals(),
+                terrain.getMdl().getIndexes());
+        terrain.setProcessedModel(terrainModel);
+
+
         while (!RenderManager.shouldExit()) {
             entity.rotate(0, 0.5f, 0);
 
             cam.move();
+
+            RenderManager.processTerrain(terrain);
             RenderManager.processEntity(entity);
-            RenderManager.renderBatch(shader, light, cam);
+            RenderManager.renderBatch(light, cam);
             RenderManager.updateRender(config.FPS);
 
 //            entity2.rotate(0, 0, 0.5f);
@@ -121,7 +134,7 @@ public class Game {
 
     }
 
-    private void renderingPipeline(StaticShader shader, Renderer renderer) {
+    private void renderingPipeline(DefaultShader shader, Renderer renderer) {
 
     }
 }

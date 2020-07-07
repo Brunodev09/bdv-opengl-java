@@ -4,7 +4,7 @@ import com.src.entity.Entity;
 import com.src.model.Model;
 import com.src.model.TexturedModel;
 import com.src.shader.PrimitiveShader;
-import com.src.shader.StaticShader;
+import com.src.shader.DefaultShader;
 import com.src.texture.ModelTexture;
 import com.src.utils.MathUtils;
 import org.lwjgl.opengl.*;
@@ -16,26 +16,22 @@ import java.util.Map;
 
 public class Renderer {
     // @TODO - Manage the used positions on the VAO.
-
-    private static final float _FOV = 70;
-    private static final float _NEAR_PLANE = 0.1f;
-    private static final float _FAR_PLANE = 1000;
+    // @TODO - Manage 2D renderer through the RendererManager
 
     private Matrix4f _projection;
-    private StaticShader _shader;
+    private DefaultShader _shader;
 
     public Renderer() {
 
     }
 
-    public Renderer(StaticShader shader) {
+    public Renderer(DefaultShader shader, Matrix4f projectionMatrix) {
         _shader = shader;
         // Culling back faces
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glCullFace(GL11.GL_BACK);
-        _projection = MathUtils.createProjectionMatrix(_FOV, _NEAR_PLANE, _FAR_PLANE);
         shader.init();
-        shader.loadProjectionMatrix(_projection);
+        shader.loadProjectionMatrix(projectionMatrix);
         shader.stop();
     }
 
@@ -43,7 +39,6 @@ public class Renderer {
         // Culling back faces
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glCullFace(GL11.GL_BACK);
-        _projection = MathUtils.createProjectionMatrix(_FOV, _NEAR_PLANE, _FAR_PLANE);
         shader.init();
         shader.loadProjectionMatrix(_projection);
         shader.stop();
@@ -57,13 +52,6 @@ public class Renderer {
         shader.stop();
 
         return _r;
-    }
-
-    public void init() {
-        // Clip rectangles that are rendered on top of each other
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(0.3f, 0.1f, 0.1f, 1);
     }
 
     public void render(Model mdl) {
@@ -93,24 +81,25 @@ public class Renderer {
 
     public void renderEntities(Map<TexturedModel, List<Entity>> entities) {
         for (TexturedModel key : entities.keySet()) {
-            this._modelSetup(key, _shader);
+            this._modelSetup(key);
             List<Entity> entitiesToLoadFromModel = entities.get(key);
             for (Entity entity : entitiesToLoadFromModel) {
-                this._applyTransformationAndLoadIntoShader(entity, _shader);
+                this._applyTransformationAndLoadIntoShader(entity);
                 GL11.glDrawElements(GL11.GL_TRIANGLES, key.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
             }
             this._unbindTexture();
         }
     }
 
-    private void _modelSetup(TexturedModel tmdl, StaticShader shader) {
+
+    private void _modelSetup(TexturedModel tmdl) {
         Model mdl = tmdl.getModel();
         GL30.glBindVertexArray(mdl.getVAOID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         GL20.glEnableVertexAttribArray(2);
         ModelTexture md = tmdl.getModelTexture();
-        shader.loadSpecularLights(md.getShineDamper(), md.getReflectivity());
+        _shader.loadSpecularLights(md.getShineDamper(), md.getReflectivity());
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, tmdl.getModelTexture().getId());
@@ -124,7 +113,7 @@ public class Renderer {
         GL30.glBindVertexArray(0);
     }
 
-    private void _applyTransformationAndLoadIntoShader(Entity entity, StaticShader shader) {
+    private void _applyTransformationAndLoadIntoShader(Entity entity) {
         // Applying transformations and loading them to the VAO
         Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(
                 entity.getPosition(),
@@ -132,7 +121,7 @@ public class Renderer {
                 entity.getRotY(),
                 entity.getRotZ(),
                 entity.getScale());
-        shader.loadTransformationMatrix(transformationMatrix);
+        _shader.loadTransformationMatrix(transformationMatrix);
     }
 
     public void render(Entity entity, PrimitiveShader shader) {
